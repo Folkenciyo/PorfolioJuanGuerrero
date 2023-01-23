@@ -223,31 +223,31 @@ export default class Preloader extends EventEmitter{
     }
 
     onScroll(e) {
-        if(e.deltaY >0){
+        if(e.deltaY > 0){
             this.removeEventListeners();
             this.playSecondIntro();
         }
     }
 
-    onTouch(e){
-        this.initalY = e.touches[0].clientY;
+    onTouch(e) {
+        this.initialY = e.touches[0].clientY;
     }
 
-    onTouchMove(e){
+    onTouchMove(e) {
         let currentY = e.touches[0].clientY;
-        let difference = this.initalY - currentY;
+        let difference = this.initialY - currentY;
         if (difference > 0) {
-            /* console.log("swipped up"); */
+            console.log("swipped up");
             this.removeEventListeners();
             this.playSecondIntro();
         }
-        this.intialY = null;
+        this.initialY = null;
     }
 
     removeEventListeners() {
-        window.removeEventListener("wheel",  this.scrollOnceEvent)
-        window.removeEventListener("touchstart",  this.touchStart)
-        window.removeEventListener("touchmove",  this.touchMove)
+        window.removeEventListener("wheel", this.scrollOnceEvent);
+        window.removeEventListener("touchstart", this.touchStart);
+        window.removeEventListener("touchmove", this.touchMove);
     }
 
     async playIntro() {
@@ -255,12 +255,12 @@ export default class Preloader extends EventEmitter{
         this.scrollOnceEvent = this.onScroll.bind(this);
         this.touchStart = this.onTouch.bind(this);
         this.touchMove = this.onTouchMove.bind(this);
-        window.addEventListener("wheel",  this.scrollOnceEvent)
-        window.addEventListener("touchstart",  this.touchStart)
-        window.addEventListener("touchmove",  this.touchMove)
+        window.addEventListener("wheel", this.scrollOnceEvent);
+        window.addEventListener("touchstart", this.touchStart);
+        window.addEventListener("touchmove", this.touchMove);
     }
 
-    async playSecondIntro(){
+    async playSecondIntro() {
         await this.secondIntro();
         this.emit("enablecontrols");
     }

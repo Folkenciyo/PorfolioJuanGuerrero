@@ -33,7 +33,7 @@ export default class Experience{
 
         this.preloader.on("enablecontrols", ()=>{
             this.controls = new Controls();
-        })
+        }) 
 
         this.sizes.on("resize", ()=> { 
             this.resize();

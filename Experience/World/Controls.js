@@ -84,6 +84,7 @@ export default class Controls {
             "(min-width: 969px)": () => {
                 //resets
                 this.room.scale.set(0.5, 0.5, 0.5);
+                this.room.position.set(0, 0, 0);
                 //first section -----------------------------
                 this.firstMoveTimeline = new GSAP.timeline({
                     scrollTrigger: {
