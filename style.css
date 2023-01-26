@@ -339,6 +339,9 @@ svg{
   margin-top: 64px;
 }
 .section-heading-link {
+  display:flex;
+  justify-content:left;
+  align-items: center;
   text-decoration: none;
   margin-left: 5px;
   color: var(--color-text)
