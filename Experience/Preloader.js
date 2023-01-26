@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import Experience from "./Experience.js"
 import GSAP from "gsap";
+import convert from "./Utils/convert.js";
 
 export default class Preloader extends EventEmitter{
     constructor() {
@@ -23,6 +24,12 @@ export default class Preloader extends EventEmitter{
         })
     }
     setAssets() {
+        convert(document.querySelector(".intro-text"))
+        convert(document.querySelector(".hero-main-title"))
+        convert(document.querySelector(".hero-main-description"))
+        convert(document.querySelector(".hero-second-subheading-title"))
+        convert(document.querySelector(".hero-second-subheading"))
+
         this.room = this.experience.world.room.actualRoom;
         this.roomChildren = this.experience.world.room.roomChildren;
     }
@@ -31,6 +38,17 @@ export default class Preloader extends EventEmitter{
         return new Promise((resolve)=>{
 
             this.timeline = new GSAP.timeline();
+            this.timeline.set(".animatedis", { y: 0, yPercent: 100 });
+                        this.timeline.to(".preloader", {
+                opacity: 0,
+                zIndex: -90,
+                delay: 1,
+                onComplete: () => {
+                    document
+                        .querySelector(".preloader")
+                        .classList.add("hidden");
+                },
+            });
     
             if(this.device === "desktop"){
                 this.timeline.to(this.roomChildren.introcube1.scale, {
@@ -49,8 +67,7 @@ export default class Preloader extends EventEmitter{
                 }, "same").to(this.room.position, {
                     x:1,
                     ease: "power1.out",
-                    duration:0.7,
-                    onComplete:resolve,
+                    duration:0.7
                 })
                 this.room.children.forEach((child)=>{
                     if(
@@ -59,7 +76,7 @@ export default class Preloader extends EventEmitter{
                         child.name === "wallLight"||
                         child.name === "screenLight1"||
                         child.name === "screenLight2"){
-                            child.intensity = 0
+                            this.setLights(child, 0)
                         }
                 })
                 
@@ -78,19 +95,45 @@ export default class Preloader extends EventEmitter{
                     ease: "back.out(2.5)",
                     duration: 0.7,
                 }, "same").to(this.room.position, {
-                    z:1,
+                    z:1.2,
                     ease: "power1.out",
                     duration:0.7,
-                    onComplete:resolve,
+                });
+
+                this.room.children.forEach((child)=>{
+                    if(
+                        child.name === "fishTankLight"||
+                        child.name === "windowsLight"||
+                        child.name === "wallLight"||
+                        child.name === "screenLight1"||
+                        child.name === "screenLight2"){
+                            this.setLights(child, 0)
+                        }
                 });
             }
+            this.timeline.to(".intro-text .animatedis", {
+                yPercent: 0,
+                stagger:0.05,
+                ease:"back.out(1.7)",
+            }).to(".arrow-svg-wrapper", {
+                opacity:1
+            }, "last").to(".toggle-bar", {
+                opacity:1,
+                onComplete:resolve,
+            }, "last")
         });
     }
     secondIntro(){
         return new Promise ((resolve) =>{
             this.secondTimeline = new GSAP.timeline();
 
-            this.secondTimeline.to(this.room.position, {
+            this.secondTimeline.to(".intro-text .animatedis", {
+                yPercent: 100,
+                stagger:0.05,
+                ease:"back.in(1.7)",
+            }, "fadeout").to(".arrow-svg-wrapper", {
+                opacity:0
+            }, "fadeout").to(this.room.position, {
                 x:0,
                 y:0,
                 z:0,
@@ -129,98 +172,141 @@ export default class Preloader extends EventEmitter{
                 x:0,
                 y:0,
                 z:0
+            }, "introcube").to(".hero-main-title .animatedis", {
+                yPercent: 0,
+                stagger:0.05,
+                ease:"back.out(1.7)",
+            }, "introcube").to(".hero-main-description .animatedis", {
+                yPercent: 0,
+                stagger:0.05,
+                ease:"back.out(1.7)",
+            }, "introcube").to(".hero-second-subheading-title .animatedis", {
+                yPercent: 0,
+                stagger:0.05,
+                ease:"back.out(1.7)",
+            }, "introcube").to(".hero-second-subheading .animatedis", {
+                yPercent: 0,
+                stagger:0.05,
+                ease:"back.out(1.7)",
             }, "introcube").to(this.roomChildren.avion.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.52
             }).to(this.roomChildren.corcho.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.escritorio.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.estanteria.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.floor.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }, "chair").to(this.roomChildren.pantalla1.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.pantalla2.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.pecera.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.pez.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             }).to(this.roomChildren.silla.scale, {
                 x:1,
                 y:1,
                 z:1,
-                duration:0.5
+                duration:0.2
             }, "chair").to(this.roomChildren.silla.rotation, {
                 y:4 * Math.PI ,
                 ease: "power2.out",
-                duration:0.5
+                duration:0.2
             }, "chair").to(this.roomChildren.topescritorio.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             },"topdesk").to(this.roomChildren.vapor1.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             },"topdesk").to(this.roomChildren.vapor2.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
+                duration: 0.2,
             },"topdesk").to(this.roomChildren.vapor3.scale, {
                 x:1,
                 y:1,
                 z:1,
                 ease: "back.out(2.2)",
-                duration: 0.5,
-                onComplete: resolve
-            },"topdesk")
-    
+                duration: 0.2,
+                
+            },"topdesk").to(".arrow-svg-wrapper", {
+                opacity:1,
+                onComplete:resolve,
+            }, "last"); 
         });
     }
+
+    setLights(name, intensity){
+        name.intensity = intensity;
+    }
+
+    setLightsOn(){
+        this.room.children.forEach((child)=>{
+            if(child.name === "fishTankLight"){
+                    this.setLights(child, 5)
+                }
+            if(child.name === "windowsLight"){
+                this.setLights(child, 2)
+            }
+            if(child.name === "wallLight"){
+                this.setLights(child, 2)
+            }
+            if(child.name === "screenLight1"){
+                this.setLights(child, 0.8)
+            }
+            if(child.name === "screenLight2"){
+                this.setLights(child, 0.6)
+            }
+        })
+    }
+
 
     onScroll(e) {
         if(e.deltaY > 0){
@@ -237,7 +323,7 @@ export default class Preloader extends EventEmitter{
         let currentY = e.touches[0].clientY;
         let difference = this.initialY - currentY;
         if (difference > 0) {
-            console.log("swipped up");
+            /* console.log("swipped up"); */
             this.removeEventListeners();
             this.playSecondIntro();
         }
@@ -252,6 +338,7 @@ export default class Preloader extends EventEmitter{
 
     async playIntro() {
         await this.firstIntro();
+        this.moveFlag = true;
         this.scrollOnceEvent = this.onScroll.bind(this);
         this.touchStart = this.onTouch.bind(this);
         this.touchMove = this.onTouchMove.bind(this);
@@ -261,7 +348,39 @@ export default class Preloader extends EventEmitter{
     }
 
     async playSecondIntro() {
-        await this.secondIntro();
+        this.moveFlag = false;
+        this.scaleFlag = true;
+        await this.secondIntro();      
+        this.setLightsOn();  
+        this.scaleFlag = false;
+        
         this.emit("enablecontrols");
+    }
+
+    move() {
+        if(this.device === "desktop"){
+            this.room.position.set(1,0,0);
+        }else{
+            this.room.position.set(0,0,1);
+        }
+    }
+
+    scale() {
+        if(this.device === "desktop"){
+            this.room.scale.set(0.5,0.5,0.5);
+        }else{
+            this.room.scale.set(0.5,0.5,0.5);
+        }
+    }
+
+    update(){
+        if(this.moveFlag){
+            this.move();
+        }
+
+        if(this.scaleFlag){
+            this.scale();
+        }
+        
     }
 }
